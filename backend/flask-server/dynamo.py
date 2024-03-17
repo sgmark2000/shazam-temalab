@@ -35,11 +35,13 @@ def read(bucket,value):
         Key={ 'hash_bucket': bucket,
              'hash_of_song': value}
     )
-    print(response['Item'])
+    return response['Item']['song_name']
 
 def query(bucket):
    response = table.query(KeyConditionExpression=Key("hash_bucket").eq(str(bucket)))
-   print(response['Items'])
+   list= response['Items']
+   for x in list:
+      print(x['song_name'])
 
 def insert(bucket,tuple):
     item = {
@@ -57,7 +59,7 @@ list = [(str(x) , id_generator()) for x in range(30)]
 for item in list:
   pseduo_hash(item,hash_table)
 
-print(hash_table)
+
                 
 read('12345','123456')
 
@@ -66,5 +68,5 @@ for i in range(len(hash_table)):
    for j in range(len(hash_table[i])):
       insert(str(i),hash_table[i][j])
    
-print(table.scan()['Items'])
+
 query(10)
