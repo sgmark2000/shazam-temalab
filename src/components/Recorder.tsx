@@ -79,7 +79,7 @@ async function uploadBlob(audioBlob: Blob) {
   formData.append('type','wav');
 
   // Your server endpoint to upload audio:
-  const apiUrl = "http://localhost:5000/site";
+  const apiUrl = "http://localhost:5000/zene";
 
   const response = await fetch(apiUrl, {
     method: 'POST',
