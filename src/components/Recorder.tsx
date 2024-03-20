@@ -1,35 +1,36 @@
-import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
-import Button from "react-bootstrap/esm/Button";
-
-export default function Recorder() {
-    const recorderControls = useAudioRecorder(
-      {
-        noiseSuppression: true,
-        echoCancellation: true,
-      },
-      (err: any) => console.table(err)
-    );
-    const addAudioElement = (blob: Blob | MediaSource) => {
-      const url = URL.createObjectURL(blob);
-      const audio = document.createElement('audio');
-      audio.src = url;
-      audio.controls = true;
-      //document.body.appendChild(audio);
-    };
+import { useEffect } from 'react';
+import { useAudioRecorder } from 'react-audio-voice-recorder';
+import { Button } from 'react-bootstrap';
   
+  export default function Recorder ()
+  {
+    const {
+      startRecording,
+      stopRecording,
+      //togglePauseResume,
+      recordingBlob,
+      isRecording,
+      //isPaused,
+      //recordingTime,
+      //mediaRecorder
+    } = useAudioRecorder();
+  
+    useEffect(() => {
+      if (!recordingBlob) return;
+  
+      // recordingBlob will be present at this point after 'stopRecording' has been called
+    }, [recordingBlob])
+
     return (
       <div>
-        <AudioRecorder
-          onRecordingComplete={(blob) => addAudioElement(blob)}
-          recorderControls={recorderControls}
-          showVisualizer={true}
-        />
-        <br />
-        <Button onClick={recorderControls.stopRecording}>Stop recording</Button>
-        <br />
+        { !isRecording ?
+        <div>
+          <p>Press start to record the audio</p><Button onClick = {startRecording}>Start</Button>
+        </div> :
+        <div>
+          <p className="fade-in-fade-out">Recording...</p>
+          <Button variant='danger' onClick = {stopRecording}>Stop</Button>
+        </div> }
       </div>
-    );
+    )
   }
-
-
-

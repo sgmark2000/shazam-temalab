@@ -4,11 +4,8 @@ import Recorder from './components/Recorder';
 
 function App() {
   return (
-    <div className="App-header">
-      
-        <p>Record something</p>
+    <div className="App">
         <Recorder></Recorder>
-      
     </div>
   );
 }
