@@ -1,6 +1,7 @@
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 import Button from "react-bootstrap/esm/Button";
 
+
 export default function Recorder() {
     const recorderControls = useAudioRecorder(
       {
@@ -14,6 +15,9 @@ export default function Recorder() {
       const audio = document.createElement('audio');
       audio.src = url;
       audio.controls = true;
+      console.log(audio);
+      console.log(blob);
+      
       //document.body.appendChild(audio);
     };
   
