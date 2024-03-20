@@ -73,6 +73,7 @@ function stopRecording() {
   }
 }*/
 
+
 async function uploadBlob(audioBlob: Blob) {
   const formData = new FormData();
   formData.append('audio_data', audioBlob, 'file');
