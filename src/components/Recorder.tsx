@@ -10,10 +10,6 @@ let capturedStream: MediaStream | null = null;
 // Register the extendable-media-recorder-wav-encoder
 register(await connect());
 
-//async connect() {
-//  await register(await connect());
-//}
-
 // Starts recording audio
 function startRecording() {
   return navigator.mediaDevices.getUserMedia({
@@ -69,12 +65,29 @@ function stopRecording() {
   });
 }
 
-function playAudio(audioBlob: Blob | MediaSource) {
+/*function playAudio(audioBlob: Blob | MediaSource) {
   if (audioBlob) {
     const audio = new Audio();
     audio.src = URL.createObjectURL(audioBlob);
     audio.play();
   }
+}*/
+
+async function uploadBlob(audioBlob: Blob) {
+  const formData = new FormData();
+  formData.append('audio_data', audioBlob, 'file');
+  formData.append('type','wav');
+
+  // Your server endpoint to upload audio:
+  const apiUrl = "http://localhost:5000/upload/audio";
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    cache: 'no-cache',
+    body: formData
+  });
+
+  return response.json();
 }
 
 export default function Recorder ()
@@ -88,12 +101,13 @@ export default function Recorder ()
 
   async function stopRec()
   {
-    //stopRecording();
     const wavAudioBlob = await stopRecording();
     stopRecording();
     setIsRecording(false);
+    //if(wavAudioBlob)
+    //  playAudio(wavAudioBlob);
     if(wavAudioBlob)
-      playAudio(wavAudioBlob);
+      uploadBlob(wavAudioBlob);
     
   }
 
