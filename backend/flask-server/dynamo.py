@@ -40,8 +40,10 @@ def read(bucket,value):
 def query(bucket):
    response = table.query(KeyConditionExpression=Key("hash_bucket").eq(str(bucket)))
    list= response['Items']
+   dict = {}
    for x in list:
-      print(x['song_name'])
+      dict[x['hash_of_song']] = x['song_name']
+   return dict
 
 def insert(bucket,tuple):
     item = {

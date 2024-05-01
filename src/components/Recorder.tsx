@@ -1,5 +1,5 @@
-import {IMediaRecorder, MediaRecorder, register} from 'extendable-media-recorder';
-import {connect} from 'extendable-media-recorder-wav-encoder';
+import { IMediaRecorder, MediaRecorder, register } from 'extendable-media-recorder';
+import { connect } from 'extendable-media-recorder-wav-encoder';
 import { useState } from 'react';
 import Button from 'react-bootstrap/esm/Button';
 
@@ -7,10 +7,8 @@ let mediaRecorder: IMediaRecorder | null = null;
 let audioBlobs: BlobPart[] | undefined = [];
 let capturedStream: MediaStream | null = null;
 
-// Register the extendable-media-recorder-wav-encoder
 register(await connect());
 
-// Starts recording audio
 function startRecording() {
   return navigator.mediaDevices.getUserMedia({
     audio: {
@@ -20,12 +18,10 @@ function startRecording() {
       audioBlobs = [];
       capturedStream = stream;
 
-      // Use the extended MediaRecorder library
       mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'audio/wav'
       });
 
-      // Add audio blobs while recording 
       mediaRecorder.addEventListener('dataavailable', event => {
         if (audioBlobs != undefined)
           audioBlobs.push(event.data);
@@ -79,7 +75,6 @@ async function uploadBlob(audioBlob: Blob) {
   formData.append('audio_data', audioBlob, 'file');
   formData.append('type','wav');
 
-  // Your server endpoint to upload audio:
   const apiUrl = "http://localhost:5000/zene";
 
   const response = await fetch(apiUrl, {
@@ -94,10 +89,13 @@ async function uploadBlob(audioBlob: Blob) {
 export default function Recorder ()
 {
   const [isRecording, setIsRecording] = useState(false)
+  const [data, setData] = useState(null);
+
   function startRec()
   {
     startRecording();
     setIsRecording(true);
+    setData(null);
   }
 
   async function stopRec()
@@ -105,11 +103,21 @@ export default function Recorder ()
     const wavAudioBlob = await stopRecording();
     stopRecording();
     setIsRecording(false);
-    //if(wavAudioBlob)
-    //  playAudio(wavAudioBlob);
     if(wavAudioBlob)
       uploadBlob(wavAudioBlob);
-    
+      handleClick();  
+  }
+
+function handleClick() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:5000/site');
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        setData(JSON.parse(xhr.responseText)["0"]);
+      }
+    };
+    xhr.send();
+    //banán
   }
 
   return (
@@ -117,6 +125,9 @@ export default function Recorder ()
       { !isRecording ?
       <div>
         <p>Press start to record the audio</p><Button onClick = {startRec}>Start</Button>
+        <div>
+        {data ? <div>{data}</div> : <div></div>}
+      </div>
       </div> :
       <div>
         <p className="fade-in-fade-out">Recording...</p>
