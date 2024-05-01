@@ -23,7 +23,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-backend/__pycache__/
+backend/flask-server/__pycache__/
 backend/.idea/
 backend/.vscode/
 
