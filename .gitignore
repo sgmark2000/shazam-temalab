@@ -23,3 +23,13 @@ yarn-debug.log*
 yarn-error.log*
 
 backend/__pycache__/
+backend/.idea/
+backend/.vscode/
+
+backend/.tox/
+backend/.coverage
+backend/.coverage.*
+backend/htmlcov/
+backend/docs/_build/
+backend/dist/
+backend/venv/
