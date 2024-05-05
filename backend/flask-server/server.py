@@ -10,7 +10,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 @app.route("/site", methods = ["GET"])
 @cross_origin()
 def site():
-    return dynamo.query(10)
+    return dynamo.search(dynamo.list1)
 @app.route("/zene", methods = ["GET","POST"])
 @cross_origin()
 def zene():

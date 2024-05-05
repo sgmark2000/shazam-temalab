@@ -113,7 +113,7 @@ function handleClick() {
     xhr.open('GET', 'http://localhost:5000/site');
     xhr.onload = function() {
       if (xhr.status === 200) {
-        setData(JSON.parse(xhr.responseText)["0"]);
+        setData(JSON.parse(xhr.responseText));
       }
     };
     xhr.send();
@@ -126,7 +126,7 @@ function handleClick() {
       <div>
         <p>Press start to record the audio</p><Button onClick = {startRec}>Start</Button>
         <div>
-        {data ? <div>{data}</div> : <div></div>}
+        {data ? <div>{JSON.stringify(data)}</div> : <div></div>}
       </div>
       </div> :
       <div>

@@ -7,35 +7,31 @@ dynamodb = boto3.resource('dynamodb',
                           aws_access_key_id=config.ACCESS_KEY_ID,
                             aws_secret_access_key=config.ACCESS_SECRET_KEY,
                               region_name=config.REGION)
-table = dynamodb.Table('shazam')
-print(list(dynamodb.tables.all()))
+table = dynamodb.Table('Shazam')
+
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
   return ''.join(random.choice(chars) for _ in range(size))
 
 
 
-def create_table(table_size):
-    table = [[] for x in range(table_size)]
-    return table
 
-def pseduo_hash(tuple,bucket):
-    
-    number = int(tuple[0])
-    remainder = number%(len(bucket))
-    
-    bucket[remainder-1].append(tuple)
+
+
     
     
 
 
 
-def read(bucket,value):
+def read(value):
     response = table.get_item(
-        Key={ 'hash_bucket': bucket,
-             'hash_of_song': value}
+        Key={ 'hash_value': value
+             }
     )
-    return response['Item']['song_name']
+    if 'Item' in response.keys():
+      return response['Item']['song_name']
+    else:
+       return None
 
 def query(bucket):
    response = table.query(KeyConditionExpression=Key("hash_bucket").eq(str(bucket)))
@@ -45,30 +41,55 @@ def query(bucket):
       dict[x['hash_of_song']] = x['song_name']
    return dict
 
-def insert(bucket,tuple):
+def insert(hash,value):
     item = {
-       'hash_bucket' : bucket,
-       'hash_of_song' :tuple[0],
-       'song_name' : tuple[1]}
+       'hash_value' : hash,
+       
+       'song_name' : value}
     table.put_item(Item = item)
     
     
     return
 
 
-hash_table = create_table(11)
-list = [(str(x) , id_generator()) for x in range(30)]
-for item in list:
-  pseduo_hash(item,hash_table)
+def search(list_of_hashes):
+   
+  dict = {}
+  for x in list_of_hashes:
+      result = read(x)
+      
+      if(result != None):
+         
+         if result in dict.keys():
+            dict[result] +=1
+         else:
+            dict[result] = 1
+    
+  for key in dict:
+      dict[key] = dict[key]/len(list_of_hashes)
+
+  return dict     
+
+
+
+list = [(x , "Plug Walk") for x in range(30)]
+
 
 
                 
-read('12345','123456')
 
 
-for i in range(len(hash_table)):
-   for j in range(len(hash_table[i])):
-      insert(str(i),hash_table[i][j])
+list.append((30,"3korty"))
+for j in list:
+   insert(j[0],j[1])
    
 
-query(10)
+
+
+
+list1 = [x for x in range(20,31)]
+list1.append(36)
+list1.append(38)
+list1.append(39)
+list1.append(40)
+print(search(list1))
