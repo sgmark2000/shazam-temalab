@@ -29,7 +29,7 @@ def read(value):
              }
     )
     if 'Item' in response.keys():
-      return response['Item']['song_name']
+      return response['Item']
     else:
        return None
 
@@ -41,11 +41,12 @@ def query(bucket):
       dict[x['hash_of_song']] = x['song_name']
    return dict
 
-def insert(hash,value):
+def insert(hash,name,artist):
     item = {
        'hash_value' : hash,
        
-       'song_name' : value}
+       'song_name' :name,
+       'artist':artist}
     table.put_item(Item = item)
     
     
@@ -59,29 +60,32 @@ def search(list_of_hashes):
       result = read(x)
       
       if(result != None):
+         name = result['song_name']
+         artist = result['artist']
          
-         if result in dict.keys():
-            dict[result] +=1
+         if name in dict.keys():
+            dict[name][1] +=1
          else:
-            dict[result] = 1
+            dict[name]= [artist,1]
     
   for key in dict:
-      dict[key] = dict[key]/len(list_of_hashes)
+      
+        dict[key][1] = dict[key][1]/len(list_of_hashes)
 
   return dict     
 
 
 
-list = [(x , "Plug Walk") for x in range(30)]
+list = [(x , "Plug Walk","Rich the Kid") for x in range(30)]
 
 
 
                 
 
 
-list.append((30,"3korty"))
+list.append((30,"3korty","Azahriah"))
 for j in list:
-   insert(j[0],j[1])
+   insert(j[0],j[1],j[2])
    
 
 
