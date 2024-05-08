@@ -25,3 +25,7 @@
 .fade-in-fade-out {
   animation: fade-in-out 1s infinite alternate;
 }
+
+.asd {
+  width: 100px;
+}

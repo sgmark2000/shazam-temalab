@@ -61,14 +61,13 @@ function stopRecording() {
   });
 }
 
-/*function playAudio(audioBlob: Blob | MediaSource) {
+function playAudio(audioBlob: Blob | MediaSource | null) {
   if (audioBlob) {
     const audio = new Audio();
     audio.src = URL.createObjectURL(audioBlob);
     audio.play();
   }
-}*/
-
+}
 
 async function uploadBlob(audioBlob: Blob) {
   const formData = new FormData();
@@ -90,6 +89,7 @@ export default function Recorder ()
 {
   const [isRecording, setIsRecording] = useState(false)
   const [data, setData] = useState(null);
+  const [audio, setAudio] = useState<Blob | null>(null);
 
   function startRec()
   {
@@ -105,7 +105,13 @@ export default function Recorder ()
     setIsRecording(false);
     if(wavAudioBlob)
       uploadBlob(wavAudioBlob);
-      handleClick();  
+      setAudio(wavAudioBlob)
+      
+      handleClick();
+  }
+
+  function playBack() {
+    playAudio(audio)
   }
 
 function handleClick() {
@@ -123,16 +129,33 @@ function handleClick() {
   return (
     <div>
       { !isRecording ?
-      <div>
-        <p>Press start to record the audio</p><Button onClick = {startRec}>Start</Button>
         <div>
-        {data ? <div>{JSON.stringify(data)}</div> : <div></div>}
-      </div>
+          { audio ?
+          <div>
+            <p>Press start to record the audio</p>
+            <Button style={{marginRight: "5px"}} onClick = {startRec}>Start</Button>
+            <Button onClick = {playBack}>Play</Button>
+          </div> :
+          <div>
+            <p>Press start to record the audio</p>
+            <Button style={{marginRight: "5px"}} onClick = {startRec}>Start</Button>
+            <Button disabled>Play</Button>
+          </div>
+          }
+        <div>
+          { data ? 
+          <div>
+            {JSON.stringify(data)}
+          </div> : 
+          <div></div>
+          }
+        </div>
       </div> :
       <div>
         <p className="fade-in-fade-out">Recording...</p>
         <Button variant='danger' onClick = {stopRec}>Stop</Button>
-      </div> }
+      </div>
+      }
     </div>
   )
 }
