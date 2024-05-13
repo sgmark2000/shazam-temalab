@@ -15,7 +15,9 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 
 
-
+def getAll():
+   response = table.scan()
+   return response["Items"]
 
 
     
@@ -33,13 +35,7 @@ def read(value):
     else:
        return None
 
-def query(bucket):
-   response = table.query(KeyConditionExpression=Key("hash_bucket").eq(str(bucket)))
-   list= response['Items']
-   dict = {}
-   for x in list:
-      dict[x['hash_of_song']] = x['song_name']
-   return dict
+
 
 def insert(hash,name,artist):
     item = {
@@ -96,4 +92,5 @@ list1.append(36)
 list1.append(38)
 list1.append(39)
 list1.append(40)
-print(search(list1))
+
+print(getAll())
