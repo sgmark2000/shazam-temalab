@@ -1,3 +1,4 @@
+from decimal import Decimal
 import os
 import boto3, config, string, random
 from boto3.dynamodb.conditions import Key
@@ -103,7 +104,7 @@ def searchFile(file_path):
    
 
 def selectAll():
-   
+   dict = {}
 
    response = table.scan()
    items = response['Items']
@@ -111,7 +112,47 @@ def selectAll():
       print(response['LastEvaluatedKey'])
       response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
       items.extend(response['Items'])
-   return items
+   
+   for x in items:
+      dict[x['hash_value']] = [x['song_name'],x['artist']]
+
+   keys = dict.keys().sort()
+   sorted = { i : dict[i] for i in keys}
+   print("Database loaded to memory, ready to look up songs")
+   return sorted
+
+
+dict_of_songs = selectAll()
+
+def searchinDict(list_of_hashes):
+   dict = {}
+   for x in list_of_hashes:
+         try:
+            result = dict_of_songs[x]
+            name = result[0]
+            artist = result[1]
+            
+            if name in dict.keys():
+               dict[name][1] +=1
+            else:
+               dict[name]= [artist,1]
+         
+         except KeyError:
+            continue     
+      
+   for key in dict:
+         
+         dict[key][1] = dict[key][1]/len(list_of_hashes)
+
+   max = 0
+   maxi = None
+   
+   for key in dict:
+      if dict[key][1] > max:
+         max = dict[key][1]
+         maxi = key
+   string = f"{dict[maxi][0] - {maxi}} "
+   return string
 
 
 
