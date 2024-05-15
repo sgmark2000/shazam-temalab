@@ -109,17 +109,17 @@ def selectAll():
    response = table.scan()
    items = response['Items']
    while 'LastEvaluatedKey' in response:
-      print(response['LastEvaluatedKey'])
+      
       response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
       items.extend(response['Items'])
    
    for x in items:
       dict[x['hash_value']] = [x['song_name'],x['artist']]
 
-   keys = list(dict.keys()).sort()
-   sorted = { i : dict[i] for i in keys}
+   keys = sorted(list(dict.keys()))
+   sorted_dict = { i : dict[i] for i in keys}
    print("Database loaded to memory, ready to look up songs")
-   return sorted
+   return sorted_dict
 
 
 dict_of_songs = selectAll()
@@ -151,8 +151,8 @@ def searchinDict(list_of_hashes):
       if dict[key][1] > max:
          max = dict[key][1]
          maxi = key
-   string = f"{dict[maxi][0] - {maxi}} "
-   return string
+   response = {dict[maxi][0] :maxi}
+   return response
 
 
 
