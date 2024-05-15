@@ -1,6 +1,8 @@
 from flask import Flask, request
 import dynamo
 from flask_cors import CORS, cross_origin
+import redisdb
+
 
 app = Flask(__name__)
 CORS(app)
@@ -10,7 +12,8 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 @app.route("/site", methods = ["GET"])
 @cross_origin()
 def site():
-    return dynamo.search(dynamo.list1)
+    path = '../shazam-temalab-2024/xd.wav'
+    return redisdb.getHashListofFile(path)
 @app.route("/zene", methods = ["GET","POST"])
 @cross_origin()
 def zene():

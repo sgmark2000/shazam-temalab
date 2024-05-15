@@ -1,5 +1,10 @@
+import os
 import boto3, config, string, random
 from boto3.dynamodb.conditions import Key
+import sys
+sys.path.append('../shazam-temalab-2024')
+import pipeline 
+
 
 
 
@@ -47,7 +52,27 @@ def insert(hash,name,artist):
     
     
     return
-
+# Egy dict lista elemeit felteszi az adatbázisba olyan szerkezettel, hogy a kulcs a hash és egy listát tárol a dict aminek első eleme az előadó a második pedig a zene címe
+def insertList(list_of_dicts):
+   num = 0
+   with table.batch_writer(overwrite_by_pkeys=['hash_value']) as batch:
+         
+      for dict in list_of_dicts:
+         print(f" {num}/{len(list_of_dicts)} of songs is done")
+         
+         for key in dict:
+            
+      
+            hash = key
+            artist = dict[key][0]
+            song = dict[key][1]
+   
+            batch.put_item( Item = {
+               'hash_value': key,
+               'song_name':  song,
+               'artist': artist} )
+               
+               
 
 def search(list_of_hashes):
    
@@ -71,26 +96,18 @@ def search(list_of_hashes):
   return dict     
 
 
+def searchFile(file_path):
+   list = pipeline.pipeline_func_list(file_path)
+   return search(list)
 
-list = [(x , "Plug Walk","Rich the Kid") for x in range(30)]
-
-
-
-                
-
-
-list.append((30,"3korty","Azahriah"))
-for j in list:
-   insert(j[0],j[1],j[2])
    
 
 
 
 
-list1 = [x for x in range(20,31)]
-list1.append(36)
-list1.append(38)
-list1.append(39)
-list1.append(40)
 
-print(getAll())
+
+
+
+
+
