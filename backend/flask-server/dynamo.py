@@ -116,7 +116,7 @@ def selectAll():
    for x in items:
       dict[x['hash_value']] = [x['song_name'],x['artist']]
 
-   keys = dict.keys().sort()
+   keys = list(dict.keys()).sort()
    sorted = { i : dict[i] for i in keys}
    print("Database loaded to memory, ready to look up songs")
    return sorted
