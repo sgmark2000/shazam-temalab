@@ -55,3 +55,21 @@ def getHashListofFile(file_path):
 
 
 
+def getAll():
+    dict = {}
+    keys = r.keys()
+    
+    values = r.mget(keys)
+    
+
+    dict = {}
+    for key in keys:
+        dict[key] = values
+    
+    return dict
+
+
+
+
+
+

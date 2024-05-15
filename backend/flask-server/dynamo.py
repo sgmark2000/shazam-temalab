@@ -102,8 +102,16 @@ def searchFile(file_path):
 
    
 
+def selectAll():
+   
 
-
+   response = table.scan()
+   items = response['Items']
+   while 'LastEvaluatedKey' in response:
+      print(response['LastEvaluatedKey'])
+      response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+      items.extend(response['Items'])
+   return items
 
 
 
