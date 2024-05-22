@@ -153,9 +153,10 @@ def searchinDict(list_of_hashes):
          maxi = key
          try:
             response = {dict[maxi][0] :maxi}
+            return response
          except KeyError:
             return {"Error": "No songs found"}
-   return response
+   
 
 
 
